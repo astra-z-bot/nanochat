@@ -1,14 +1,22 @@
 # Week 02 Hands-on Lab
 
-## Milestone
-Build minimal GPT-like forward + generation.
+## Goal
+Build a tiny GPT-like forward path
 
-## Implementation targets
-- Implement `learn/rebuild/week2_transformer.py`.
-- Include embedding, attention, MLP, residual path.
-- Run one forward pass and one decode step.
+## Target artifact
+- `learn/rebuild/week2_transformer.py`
 
-## Commands
+## Step-by-step
+1. Implement embedding + one attention block + one MLP block.
+2. Run forward pass with toy token IDs.
+3. Run one-step greedy decode.
+
+## Example execution
 ```bash
-# run and iterate on week-02 deliverable
+python learn/rebuild/week2_transformer.py
 ```
+
+## Evidence to capture
+- command outputs
+- key metrics
+- one failure and how it was fixed

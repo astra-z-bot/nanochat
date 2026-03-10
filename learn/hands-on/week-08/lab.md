@@ -1,14 +1,22 @@
 # Week 08 Hands-on Lab
 
-## Milestone
-Execute full rebuild end-to-end reproduction.
+## Goal
+Run full rebuild end-to-end
 
-## Implementation targets
-- Integrate week1..week7 rebuild components.
-- Run complete pipeline: data->train->eval->chat.
-- Produce parity checklist vs original repo.
+## Target artifact
+- `learn/rebuild/`
 
-## Commands
+## Step-by-step
+1. Execute full rebuild pipeline stages in sequence.
+2. Compare outputs against nanochat expectations.
+3. Finalize parity checklist and blocker list.
+
+## Example execution
 ```bash
-# run and iterate on week-08 deliverable
+# run integrated sequence manually
 ```
+
+## Evidence to capture
+- command outputs
+- key metrics
+- one failure and how it was fixed

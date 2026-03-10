@@ -1,14 +1,22 @@
 # Week 05 Hands-on Lab
 
-## Milestone
-Build minimal SFT flow for chat data.
+## Goal
+Build mini SFT stage
 
-## Implementation targets
-- Implement `learn/rebuild/week5_chat_sft.py`.
-- Train on small conversation set.
-- Compare base vs finetuned responses.
+## Target artifact
+- `learn/rebuild/week5_chat_sft.py`
 
-## Commands
+## Step-by-step
+1. Load small conversation dataset.
+2. Run short supervised finetuning.
+3. Compare before/after responses.
+
+## Example execution
 ```bash
-# run and iterate on week-05 deliverable
+python learn/rebuild/week5_chat_sft.py
 ```
+
+## Evidence to capture
+- command outputs
+- key metrics
+- one failure and how it was fixed

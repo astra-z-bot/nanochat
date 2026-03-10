@@ -1,14 +1,22 @@
 # Week 04 Hands-on Lab
 
-## Milestone
-Build mini eval framework with tasks.
+## Goal
+Build mini eval/task framework
 
-## Implementation targets
-- Implement `learn/rebuild/week4_eval_framework.py`.
-- Define task interface + two concrete tasks.
-- Emit structured metric report.
+## Target artifact
+- `learn/rebuild/week4_eval_framework.py`
 
-## Commands
+## Step-by-step
+1. Define Task interface and two tasks.
+2. Run evaluation and aggregate metrics.
+3. Emit structured report output.
+
+## Example execution
 ```bash
-# run and iterate on week-04 deliverable
+python learn/rebuild/week4_eval_framework.py
 ```
+
+## Evidence to capture
+- command outputs
+- key metrics
+- one failure and how it was fixed

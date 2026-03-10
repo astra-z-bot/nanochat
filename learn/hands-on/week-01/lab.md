@@ -1,14 +1,22 @@
 # Week 01 Hands-on Lab
 
-## Milestone
-Build minimal text->token->batch pipeline.
+## Goal
+Build minimal text -> token -> batch pipeline
 
-## Implementation targets
-- Implement `learn/rebuild/week1_pipeline.py`.
-- Input: sample text corpus.
-- Output: token ids and batch tensors with shape report.
+## Target artifact
+- `learn/rebuild/week1_pipeline.py`
 
-## Commands
+## Step-by-step
+1. Create a small corpus list and tokenize it.
+2. Batch token IDs into fixed-length blocks.
+3. Print batch tensor shapes and one sample batch.
+
+## Example execution
 ```bash
-# run and iterate on week-01 deliverable
+python learn/rebuild/week1_pipeline.py
 ```
+
+## Evidence to capture
+- command outputs
+- key metrics
+- one failure and how it was fixed

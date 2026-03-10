@@ -1,14 +1,22 @@
 # Week 07 Hands-on Lab
 
-## Milestone
-Run one reduced experiment + one ablation.
+## Goal
+Run baseline + ablation experiment
 
-## Implementation targets
-- Implement `learn/rebuild/week7_experiment.sh`.
-- Run baseline and one controlled variant.
-- Report metric deltas and interpretation.
+## Target artifact
+- `learn/rebuild/week7_experiment.sh`
 
-## Commands
+## Step-by-step
+1. Run baseline config.
+2. Run one controlled ablation.
+3. Report metric deltas and confidence.
+
+## Example execution
 ```bash
-# run and iterate on week-07 deliverable
+bash learn/rebuild/week7_experiment.sh
 ```
+
+## Evidence to capture
+- command outputs
+- key metrics
+- one failure and how it was fixed

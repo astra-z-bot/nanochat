@@ -1,14 +1,22 @@
 # Week 03 Hands-on Lab
 
-## Milestone
-Build train loop with checkpoint resume.
+## Goal
+Build toy training loop + checkpoint resume
 
-## Implementation targets
-- Implement `learn/rebuild/week3_train_loop.py`.
-- Support save/load checkpoint state.
-- Demonstrate resume correctness with metric continuity.
+## Target artifact
+- `learn/rebuild/week3_train_loop.py`
 
-## Commands
+## Step-by-step
+1. Train for N steps and save checkpoint.
+2. Resume from checkpoint for additional steps.
+3. Verify metric continuity across resume boundary.
+
+## Example execution
 ```bash
-# run and iterate on week-03 deliverable
+python learn/rebuild/week3_train_loop.py
 ```
+
+## Evidence to capture
+- command outputs
+- key metrics
+- one failure and how it was fixed

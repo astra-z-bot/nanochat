@@ -1,16 +1,13 @@
 # Week 03 Results
 
-## Run summary
+## Run log
 -
 
-## Metrics / observations
+## Metrics
 -
 
-## Failures encountered
+## Failures and fixes
 -
 
-## Fixes applied
--
-
-## Remaining gaps vs nanochat
+## Parity gaps vs nanochat
 -
