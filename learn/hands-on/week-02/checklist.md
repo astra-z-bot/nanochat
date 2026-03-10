@@ -1,7 +1,5 @@
 # Week 02 Checklist
 
-- [ ] Target artifact created/updated
-- [ ] Command execution succeeds
-- [ ] Outputs/metrics logged
-- [ ] Differences vs nanochat documented
-- [ ] Follow-up improvements listed
+- [ ] Forward pass produces expected shape [B, T, V].
+- [ ] Decode step consumes prior context correctly.
+- [ ] Document differences vs `nanochat/gpt.py`.

@@ -1,7 +1,5 @@
 # Week 04 Checklist
 
-- [ ] Target artifact created/updated
-- [ ] Command execution succeeds
-- [ ] Outputs/metrics logged
-- [ ] Differences vs nanochat documented
-- [ ] Follow-up improvements listed
+- [ ] Task interface supports composition.
+- [ ] Scoring path is deterministic for fixed outputs.
+- [ ] Document mapping vs `tasks/common.py`.

@@ -1,22 +1,23 @@
 # Week 05 Hands-on Lab
 
 ## Goal
-Build mini SFT stage
+Implement mini SFT stage and compare behavior.
 
 ## Target artifact
 - `learn/rebuild/week5_chat_sft.py`
 
-## Step-by-step
+## Technical procedure
 1. Load small conversation dataset.
-2. Run short supervised finetuning.
-3. Compare before/after responses.
+2. Run short supervised tuning loop.
+3. Compare pre/post prompt responses.
 
-## Example execution
+## Command skeleton
 ```bash
 python learn/rebuild/week5_chat_sft.py
 ```
 
-## Evidence to capture
-- command outputs
-- key metrics
-- one failure and how it was fixed
+## What to capture
+- raw command output
+- metrics table
+- one failure + fix
+- parity note vs original repo

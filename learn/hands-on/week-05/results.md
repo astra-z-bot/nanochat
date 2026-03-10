@@ -1,13 +1,17 @@
 # Week 05 Results
 
-## Run log
--
+## Run identity
+- commit:
+- date:
+- hardware:
 
 ## Metrics
 -
 
-## Failures and fixes
--
+## Failure log
+- symptom:
+- root cause:
+- fix:
 
-## Parity gaps vs nanochat
+## Parity notes
 -

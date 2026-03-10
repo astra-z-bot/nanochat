@@ -1,7 +1,5 @@
 # Week 01 Checklist
 
-- [ ] Target artifact created/updated
-- [ ] Command execution succeeds
-- [ ] Outputs/metrics logged
-- [ ] Differences vs nanochat documented
-- [ ] Follow-up improvements listed
+- [ ] Batch tensor shape is explicit and consistent across runs.
+- [ ] Token IDs are deterministic for same input.
+- [ ] Document difference vs `nanochat/dataloader.py` behavior.

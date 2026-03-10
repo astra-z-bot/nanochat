@@ -1,22 +1,23 @@
 # Week 07 Hands-on Lab
 
 ## Goal
-Run baseline + ablation experiment
+Run one baseline and one ablation with controlled variable.
 
 ## Target artifact
 - `learn/rebuild/week7_experiment.sh`
 
-## Step-by-step
-1. Run baseline config.
-2. Run one controlled ablation.
-3. Report metric deltas and confidence.
+## Technical procedure
+1. Define baseline config and run it.
+2. Define one-variable ablation and run it.
+3. Compare metrics with explicit interpretation caveats.
 
-## Example execution
+## Command skeleton
 ```bash
-bash learn/rebuild/week7_experiment.sh
+# run integrated commands for this week
 ```
 
-## Evidence to capture
-- command outputs
-- key metrics
-- one failure and how it was fixed
+## What to capture
+- raw command output
+- metrics table
+- one failure + fix
+- parity note vs original repo

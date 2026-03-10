@@ -1,7 +1,5 @@
 # Week 06 Checklist
 
-- [ ] Target artifact created/updated
-- [ ] Command execution succeeds
-- [ ] Outputs/metrics logged
-- [ ] Differences vs nanochat documented
-- [ ] Follow-up improvements listed
+- [ ] Endpoint responds deterministically on fixed prompt.
+- [ ] UI request/response schema is documented.
+- [ ] Document differences vs `chat_web.py` + `ui.html`.

@@ -1,22 +1,23 @@
 # Week 04 Hands-on Lab
 
 ## Goal
-Build mini eval/task framework
+Build task abstraction + two tasks + aggregated evaluation.
 
 ## Target artifact
 - `learn/rebuild/week4_eval_framework.py`
 
-## Step-by-step
-1. Define Task interface and two tasks.
-2. Run evaluation and aggregate metrics.
-3. Emit structured report output.
+## Technical procedure
+1. Define minimal Task interface and run contract.
+2. Implement two concrete tasks with distinct scoring.
+3. Aggregate and print structured metrics summary.
 
-## Example execution
+## Command skeleton
 ```bash
 python learn/rebuild/week4_eval_framework.py
 ```
 
-## Evidence to capture
-- command outputs
-- key metrics
-- one failure and how it was fixed
+## What to capture
+- raw command output
+- metrics table
+- one failure + fix
+- parity note vs original repo

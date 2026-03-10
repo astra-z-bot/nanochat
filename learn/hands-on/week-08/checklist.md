@@ -1,7 +1,5 @@
 # Week 08 Checklist
 
-- [ ] Target artifact created/updated
-- [ ] Command execution succeeds
-- [ ] Outputs/metrics logged
-- [ ] Differences vs nanochat documented
-- [ ] Follow-up improvements listed
+- [ ] Each stage has executable evidence.
+- [ ] Known parity gaps are listed with file-level ownership.
+- [ ] Final blocker list is prioritized.

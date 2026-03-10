@@ -1,22 +1,23 @@
 # Week 06 Hands-on Lab
 
 ## Goal
-Build minimal serving stack
+Implement minimal serving path (CLI + Web).
 
 ## Target artifact
-- `learn/rebuild/week6_serve.py`
+- `learn/rebuild/week6_serve.py and learn/rebuild/week6_ui.html`
 
-## Step-by-step
-1. Expose simple generation endpoint.
-2. Serve `week6_ui.html` against endpoint.
-3. Record basic latency observations.
+## Technical procedure
+1. Expose generation endpoint in Python process.
+2. Connect simple UI to endpoint.
+3. Measure rough latency (request->response).
 
-## Example execution
+## Command skeleton
 ```bash
-python learn/rebuild/week6_serve.py
+# run integrated commands for this week
 ```
 
-## Evidence to capture
-- command outputs
-- key metrics
-- one failure and how it was fixed
+## What to capture
+- raw command output
+- metrics table
+- one failure + fix
+- parity note vs original repo

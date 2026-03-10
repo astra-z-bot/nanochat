@@ -1,7 +1,5 @@
 # Week 07 Checklist
 
-- [ ] Target artifact created/updated
-- [ ] Command execution succeeds
-- [ ] Outputs/metrics logged
-- [ ] Differences vs nanochat documented
-- [ ] Follow-up improvements listed
+- [ ] Only one independent variable changed.
+- [ ] Logs include run identity and key metrics.
+- [ ] Interpretation includes uncertainty/confounders.
