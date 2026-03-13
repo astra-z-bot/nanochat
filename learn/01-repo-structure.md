@@ -53,28 +53,23 @@ A chat model starts as token prediction over text. So the first real technical s
 ### Core files
 
 #### `nanochat/tokenizer.py`
-High-level role:
 - owns tokenization interfaces used by the project
 - connects tokenizer training artifacts to runtime encode/decode behavior
 - acts as the boundary between raw text and model vocabulary space
 
 #### `scripts/tok_train.py`
-High-level role:
 - trains a tokenizer for the project
 - used when you want to create tokenizer artifacts from data
 
 #### `scripts/tok_eval.py`
-High-level role:
 - evaluates tokenizer quality, mainly through compression-oriented metrics
 - helps compare tokenizer choices before model training
 
 #### `nanochat/dataset.py`
-High-level role:
 - defines how pretraining data is stored and accessed
 - includes utilities around parquet-based dataset handling
 
 #### `nanochat/dataloader.py`
-High-level role:
 - turns tokenized data into distributed training batches
 - handles packing/chunking/batching details for pretraining
 
@@ -110,7 +105,6 @@ This repo’s model core lives in `nanochat/`.
 ### Core files
 
 #### `nanochat/gpt.py`
-High-level role:
 - defines the transformer model itself
 - this is the heart of the repo
 - if you want to understand “what is being trained?”, this is the primary file
@@ -121,18 +115,15 @@ It is the file that answers:
 - how attention/MLP/residual paths are structured
 
 #### `nanochat/flash_attention.py`
-High-level role:
 - attention backend switching layer
 - decides how attention is executed depending on available kernel/runtime support
 - exists to make attention fast when possible, without changing higher-level model code
 
 #### `nanochat/fp8.py`
-High-level role:
 - low-precision training support
 - encodes special logic for FP8-style pathways and related constraints
 
 #### `nanochat/common.py`
-High-level role:
 - runtime utilities shared across the system
 - includes things like dtype/runtime detection, logging helpers, shared convenience functions
 - not “the model,” but heavily used by the model/training runtime
@@ -158,7 +149,6 @@ Pipeline view:
 ### Core files
 
 #### `scripts/base_train.py`
-High-level role:
 - main pretraining entrypoint
 - orchestrates the base model training run
 - wires together tokenizer/data/model/optimizer/checkpointing/reporting
@@ -166,22 +156,18 @@ High-level role:
 This is the runtime backbone of pretraining.
 
 #### `nanochat/optim.py`
-High-level role:
 - optimizer implementation/composition
 - contains the logic for how parameters are updated
 
 #### `nanochat/checkpoint_manager.py`
-High-level role:
 - save/load/resume behavior for checkpoints
 - essential for long runs and experiment continuity
 
 #### `nanochat/loss_eval.py`
-High-level role:
 - computes training-adjacent evaluation/loss metrics for base models
 - used to interpret whether learning is actually happening
 
 #### `nanochat/report.py`
-High-level role:
 - report generation and summary outputs for runs
 - translates raw run signals into consumable experiment artifacts
 
@@ -205,12 +191,10 @@ You need to score it.
 ### Core files
 
 #### `scripts/base_eval.py`
-High-level role:
 - entrypoint for evaluating base checkpoints
 - coordinates evaluation runs and metric collection
 
 #### `nanochat/core_eval.py`
-High-level role:
 - implements the CORE metric/evaluation logic used by the repo
 - this is central to how model quality is compared in nanochat
 
@@ -271,22 +255,18 @@ Nanochat splits that into multiple post-training stages.
 ### Core files
 
 #### `scripts/chat_sft.py`
-High-level role:
 - supervised fine-tuning (SFT) stage
 - uses conversation-style/task-style data to teach the model better interaction behavior
 
 #### `scripts/chat_rl.py`
-High-level role:
 - reinforcement-learning stage for chat behavior refinement
 - sits after or alongside SFT depending on workflow
 
 #### `scripts/chat_eval.py`
-High-level role:
 - evaluates the chat model specifically
 - this is different from base eval because interactive behavior is the target now
 
 #### `nanochat/execution.py`
-High-level role:
 - sandboxed execution utilities for code emitted by the model
 - relevant to chat/eval/tool-using scenarios where the model output must be executed or validated
 
@@ -323,23 +303,19 @@ Once you have a chat model, the next question is how it is used at runtime.
 ### Core files
 
 #### `nanochat/engine.py`
-High-level role:
 - inference engine
 - the runtime layer that handles generation behavior efficiently
 - this is the bridge from trained weights to actual token-by-token output
 
 #### `scripts/chat_cli.py`
-High-level role:
 - CLI interface for chatting with the model
 - simplest interactive serving surface
 
 #### `scripts/chat_web.py`
-High-level role:
 - web server that exposes UI/API chat functionality
 - serving/runtime orchestration for browser-based usage
 
 #### `nanochat/ui.html`
-High-level role:
 - browser UI for the web chat path
 - frontend layer that pairs with `chat_web.py`
 
@@ -368,22 +344,18 @@ That is what `runs/` is for.
 ### Files
 
 #### `runs/speedrun.sh`
-High-level role:
 - the main end-to-end “fast path” recipe
 - likely the most important experiment script to understand first
 
 #### `runs/miniseries.sh`
-High-level role:
 - multi-model/depth series workflow
 - useful for structured scaling comparisons
 
 #### `runs/scaling_laws.sh`
-High-level role:
 - scaling-law style experiments
 - focused on controlled comparisons across budgets/settings
 
 #### `runs/runcpu.sh`
-High-level role:
 - small CPU/MPS-friendly path for local sanity checks
 - useful when full multi-GPU setup is unavailable
 
@@ -401,12 +373,10 @@ They tell you how the repo authors expect the pieces to be used together in prac
 ### Files
 
 #### `tests/test_attention_fallback.py`
-High-level role:
 - verifies correctness across attention backend paths
 - important because flash/fallback divergence would poison both training and inference conclusions
 
 #### `tests/test_engine.py`
-High-level role:
 - verifies inference engine behavior
 - important because runtime bugs can make a trained model look worse or inconsistent
 
