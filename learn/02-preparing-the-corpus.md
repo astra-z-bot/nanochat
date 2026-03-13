@@ -61,7 +61,7 @@ The repackaging script is not just reformatting for convenience. It is creating 
 
 The script makes four important choices:
 
-### 2.1 a. It shuffles the dataset
+### 2.1 It shuffles the dataset
 
 ```python
 # Source dataset
@@ -75,7 +75,7 @@ This means the stored shard order is already randomized once during preparation.
 
 The point is not only statistical cleanliness. It also means the runtime dataloader can consume shards in order without inheriting a pathological source ordering.
 
-### 2.2 b. It writes parquet shards
+### 2.2 It writes parquet shards
 
 Each shard is written as a parquet file containing a single `text` column.
 
@@ -87,7 +87,7 @@ The schema is simple on purpose:
 - one `text` column
 - no categorical tricks or fancy structure
 
-### 2.3 c. It targets shard sizes, not just record counts
+### 2.3 It targets shard sizes, not just record counts
 
 The script accumulates roughly `250_000_000` characters per shard before writing, with a `row_group_size` of `1024`.
 
@@ -99,7 +99,7 @@ That creates a compromise:
 
 The row-group detail matters later because nanochat’s runtime iterator works at row-group granularity.
 
-### 2.4 d. It uploads the prepared shards for runtime download
+### 2.4 It uploads the prepared shards for runtime download
 
 At the end, the script uploads the repackaged parquet shard folder to Hugging Face using `HfApi.upload_large_folder`.
 
@@ -188,13 +188,13 @@ Its behavior is precise:
 
 There are two structural choices worth noticing here.
 
-### 6.1 a. Validation is pinned to the last shard
+### 6.1 Validation is pinned to the last shard
 
 Nanochat does not create a separate validation dataset object here. It simply reserves the last shard as validation.
 
 That is a very lightweight split policy, but it works because the repackaging stage already shuffled the global dataset before shard creation.
 
-### 6.2 b. Iteration is row-group-based
+### 6.2 Iteration is row-group-based
 
 The iterator yields batches at the parquet row-group level rather than yielding one document at a time or loading an entire shard at once.
 
@@ -223,15 +223,15 @@ Given a shard index, it:
 
 Three implementation details matter here.
 
-### 7.1 a. Temporary-file write then atomic rename
+### 7.1 Temporary-file write then atomic rename
 
 This prevents partially downloaded shards from being mistaken for valid data files.
 
-### 7.2 b. Exponential backoff
+### 7.2 Exponential backoff
 
 The dataset is large and fetched over the network. Retry logic is part of the normal operating design, not a rare edge-case add-on.
 
-### 7.3 c. Runtime dataset code does its own download logic
+### 7.3 Runtime dataset code does its own download logic
 
 Even though `nanochat/common.py` contains a generic `download_file_with_lock()` helper, `nanochat/dataset.py` does not use it here. Instead, it uses its own requests-based shard downloader and parallelizes at the shard level via multiprocessing.
 

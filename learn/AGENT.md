@@ -234,6 +234,7 @@ Use a shallow, stable hierarchy:
 
 Section headings should be parallel in style.
 Prefer short title-case noun phrases over sentence-style headings.
+Do not add an extra alphabetic layer such as `a.` or `b.` under numbered subsection headings.
 
 Good section headings:
 - `## 4. Base Model Training`
