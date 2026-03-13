@@ -1,196 +1,197 @@
 # AGENT.md — Editorial Guide for the Nanochat Textbook
 
-This file governs how chapters in `learn/` should be written.
+This file defines how chapters in `learn/` should be written.
 
-## Audience
+## Reader model
 
-The reader is an experienced engineer.
+Assume the reader is an experienced engineer.
 
 Assume:
 - strong programming background
 - comfort reading Python systems code
-- familiarity with basic ML/LLM ideas
+- familiarity with standard ML/LLM concepts
 
-Do **not** spend space re-explaining obvious concepts unless nanochat uses them in a non-standard way.
+Do not waste space re-explaining basics unless nanochat uses them in a non-standard or technically important way.
 
-## Primary goal
+## Core objective
 
-The book should teach the reader how nanochat actually works.
+The book should explain how nanochat works as a system.
 
-That means every chapter should answer some version of:
-- where this stage fits in the full system
+Every chapter should make the reader understand:
+- where the current stage fits in the full build/runtime flow
 - which files matter at this stage
-- what each file is doing in the flow of execution
-- which ML/runtime concepts are necessary to understand the code
-- what implementation choices nanochat makes and why they matter
+- how those files hand work to one another
+- which non-trivial concepts are required to follow the code
+- what artifacts, capabilities, or constraints this stage creates for the next one
 
-The book is not generic ML education.
-It is not generic PyTorch education.
-It is not a directory listing.
-It is a guided walkthrough of the nanochat system.
+The book is not:
+- generic ML education
+- generic PyTorch education
+- a repository inventory
+- writer-facing process notes
 
-## Writing style
+It is a guided system walkthrough.
 
-### 1. Tell the story of the system
+## Editorial principles
 
-Chapters should read as a system coming to life.
+### 1. Tell the system story
 
-Good structure:
-- first this problem appears
-- then this file becomes necessary
-- then this next file takes over
-- then this stage hands off to the next one
+Chapters should read like the system is being assembled or executed.
 
-Bad structure:
-- folder-by-folder listing
-- one-line catalog entries
-- isolated file summaries with no flow between them
+The preferred narrative pattern is:
+- a concrete problem appears
+- a file or module becomes necessary
+- that file takes over a responsibility
+- it hands state, data, or control to the next file
 
-### 2. Use prose first, tables second
+A chapter should feel like movement through the system, not static commentary about files.
 
-Narrative prose should carry the chapter.
-Tables are allowed only when they compress information cleanly.
+### 2. Files enter when they become necessary
 
-Use tables for:
-- quick recap
-- compact file summaries
-- comparison of closely related components
+Do not dump a folder and describe everything inside it.
 
-Do **not** let tables become the chapter.
+Introduce files at the point in the build/runtime flow where they actually matter.
 
-### 3. No filler
+Good:
+- explain why `nanochat/tokenizer.py` matters once raw text must become token IDs
+- explain why `scripts/base_train.py` matters once the model and batches already exist
+
+Bad:
+- directory-by-directory listing with one-line blurbs
+
+### 3. Prose first, tables second
+
+The chapter should be carried by prose.
+
+Use tables only when they compress information better than prose, for example:
+- file recap tables
+- component comparisons
+- compact end-of-section summaries
+
+Do not let tables become the chapter.
+
+### 4. Be concrete
+
+Prefer:
+- exact file names
+- exact artifacts
+- exact control-flow descriptions
+- exact runtime effects
+
+Avoid:
+- vague summaries
+- generic framework talk
+- “LLMs usually…” explanations that are not tied to nanochat
+
+### 5. Cut filler aggressively
 
 Remove:
+- motivational commentary
 - meta commentary about how the chapter is written
-- motivational sentences
-- obvious statements like “this is important” without explaining why in code terms
-- repeated labels such as “High-level role:”
-- editorial scaffolding that helps the writer more than the reader
+- repeated sentence templates
+- empty labels such as “High-level role:”
+- broad statements with no code consequence
 
-Every paragraph should either:
+Every paragraph should do at least one of these:
 - explain a code path
 - explain a design choice
 - explain a dependency
-- explain a handoff between stages
+- explain a stage handoff
+- explain an implementation consequence
 
-### 4. No instructions to the reader about the writing process
+### 6. No writer-facing instructions inside chapters
 
-Do not include phrases like:
+Do not include text like:
 - “this chapter is not…”
 - “the next chapter will…”
-- “instead of reading it this way…”
+- “instead of reading this as…”
 - “if you mentally simulate…”
 
-Those are writer-side notes, not textbook content.
+Those belong in the editorial guide, not in the book.
 
-### 5. Be specific
+## Chapter contract
 
-Prefer:
-- actual file names
-- actual control-flow descriptions
-- actual artifacts produced/consumed
-- actual runtime behavior
+Unless there is a strong reason not to, each chapter should follow this structure.
 
-over:
-- vague claims
-- abstract framework summaries
-- generic “LLMs usually…” explanations
-
-## Content priorities
-
-The order of explanation should usually follow the build/runtime flow of the system:
-
-1. bootstrap/runtime environment
-2. data/corpus preparation
-3. tokenizer
-4. batching/data loader
-5. model definition
-6. training loop + optimizer + checkpoints
-7. evaluation/task system
-8. chat post-training
-9. inference engine
-10. serving/UI
-11. experiment scripts/tests/dev workflow
-
-Files should enter the narrative at the point where they become relevant in that flow.
-
-## What each chapter should contain
-
-Each chapter should follow this format unless there is a strong reason not to.
-
-### 1. Chapter title
+### 1. Title
 
 Use a real textbook-style chapter title.
-Short, specific, and readable.
 
-Examples:
+Requirements:
+- short
+- readable
+- concrete
+- title case
+
+Good:
 - *Preparing the Corpus*
 - *Defining the Transformer*
 - *Training the Base Model*
 
-Avoid awkward procedural names like:
-- “dataset before tokenizer phase”
-- “repo structure stuff”
+Bad:
+- *Dataset Before Tokenizer Phase*
+- *Repo Structure Stuff*
 
 ### 2. Opening frame
 
-One short opening section that situates the chapter in the system.
+Start with two short paragraphs:
 
-It should answer:
-- what problem appears at this stage
-- why the previous stage is no longer enough
-- what the chapter will cover in the runtime/build flow
+1. where this stage sits in the full system
+2. what problem this stage solves
 
-Keep this short.
+Do not begin with:
+- bullets
+- tables
+- meta explanation
 
 ### 3. Main narrative body
 
-This is the core of the chapter.
+This is the chapter.
 
 Walk through the relevant files in the order they become necessary.
 
-For each major file:
-- introduce why it enters the story now
-- explain what responsibility it takes over
-- explain what it receives from the previous stage
-- explain what it hands to the next stage
+For each important file, explain:
+- why it enters the story now
+- what responsibility it takes over
+- what it receives from the previous stage
+- what it hands to the next stage
 
-This section should feel like a continuous system walkthrough, not isolated notes.
+The reader should be able to follow the system without jumping between disconnected file summaries.
 
-### 4. Key files recap
+### 4. Recap section
 
-After the narrative body, include a compact recap of the important files from the chapter.
+After the main narrative, include a compact recap of the key files.
 
-This can be a short table if it helps.
+A short table is acceptable here.
 
 Recommended columns:
 - file
-- role in system
-- what enters it
-- what leaves it
+- function in the system
+- input or dependency coming in
+- artifact or behavior going out
 
-Keep it concise.
+Keep recap sections short.
 
-### 5. Required concepts for this chapter
+### 5. Required concepts
 
-Explain only the concepts the reader truly needs in order to follow the code.
+Explain only the concepts required to understand this chapter’s code.
 
 Good examples:
 - why parquet row groups matter to iteration strategy
-- why flash attention needs a backend switch layer
 - why token-byte accounting matters for bits-per-byte metrics
-- why checkpoint state includes optimizer state, not just weights
+- why a checkpoint must include optimizer state, not just weights
+- why attention backend switching exists in practice
 
 Bad examples:
-- generic “what is a neural network” explanations
-- textbook introductions to Python classes
-- broad explanations not tied to nanochat implementation
+- what a neural network is
+- what a Python class is
+- general transformer tutorials disconnected from the code
 
 ### 6. Non-obvious dependency notes
 
-If the chapter depends on a library/package that is not obvious, explain it briefly.
+If the chapter depends on a non-obvious library or subsystem, explain it briefly.
 
-Good examples:
+Good candidates:
 - `pyarrow`
 - `datasets`
 - `tiktoken`
@@ -198,168 +199,151 @@ Good examples:
 - `filelock`
 - `fastapi`
 - `pydantic`
-- special kernels/runtime libraries
+- attention/kernel runtime libraries
 
-For each relevant package, explain:
+For each dependency, explain:
 - where it is used in nanochat
 - why it is used here
-- what subtle behavior or constraint matters
+- what subtle constraint or failure mode matters
 
-Skip this section entirely if no non-obvious dependency is central to the chapter.
+If no non-obvious dependency is central to the chapter, skip this section.
 
 ### 7. End-of-chapter synthesis
 
-Close with a short synthesis section.
+End with a short consolidation section.
 
-It should state, in system terms:
-- what the repo can do after this stage exists
-- what stage logically comes next
+It should state:
+- what is now true in the system because of this stage
+- what artifact or capability now exists
+- what stage becomes possible next
 
-Keep this compact and direct.
+Do not end with motivational prose.
 
 ## Formatting standard
 
-The book should look and read like a strong technical textbook, not like meeting notes.
+The book should look like a technical textbook, not notes or documentation fragments.
 
-### 1. Heading hierarchy
+### Heading hierarchy
 
-Use a stable hierarchy:
-
+Use a shallow, stable hierarchy:
 - `#` chapter title
-- `##` major stage/idea sections
-- `###` subsections only when a section has multiple distinct parts
+- `##` major sections
+- `###` subsections only when necessary
 
-Do not create deep heading trees unless the material truly requires it.
-Most chapters should work with `#`, `##`, and a few `###` headings.
+Avoid deeply nested headings.
 
-### 2. Opening paragraph format
+### Paragraph form
 
-The chapter should begin with:
-- one paragraph establishing where this stage sits in the full system
-- one paragraph stating the concrete problem solved by this stage
-
-Do not begin with bullets, tables, or meta explanation.
-
-### 3. Narrative body formatting
-
-The main body should be prose-first.
-
-Use paragraphs to carry:
-- system flow
-- handoff between files
-- design choices
-- implementation consequences
-
-Paragraph guidelines:
-- 3–6 sentences is the default useful size
-- one core idea per paragraph
-- when shifting from one file to another, start a new paragraph
-
-### 4. File references
-
-Always format file references as inline code:
-- `nanochat/gpt.py`
-- `scripts/base_train.py`
-
-When multiple related files appear together, introduce them in prose first, then recap them in a short list or table if useful.
-
-### 5. Code excerpts
-
-Use code excerpts selectively.
+Default paragraph size:
+- 3–6 sentences
 
 Rules:
-- only include excerpts when they teach something structural
-- prefer short excerpts over long dumps
-- always explain what the excerpt is doing immediately after the block
-- do not stack many code blocks without interpretation between them
+- one core idea per paragraph
+- start a new paragraph when moving to a new file or a new system handoff
+- keep explanatory paragraphs dense but readable
 
-A good rhythm is:
+### File references
+
+Always format file names as inline code.
+
+Examples:
+- `nanochat/gpt.py`
+- `scripts/base_train.py`
+- `tasks/common.py`
+
+Use inline code for:
+- file paths
+- commands
+- symbols
+- artifacts
+- config names
+
+### Code excerpts
+
+Use code excerpts only when they teach something structural.
+
+Rules:
+- keep them short
+- place them near the explanation that needs them
+- explain the excerpt immediately after showing it
+- do not stack many code blocks without interpretation
+
+Preferred rhythm:
 - introduce the file/function in prose
-- show one excerpt
-- explain why it matters
-- continue the story
+- show one short excerpt
+- explain what the excerpt means in the system
+- continue the narrative
 
-### 6. Tables
+### Tables
 
-Tables are recap tools, not primary exposition.
+Use tables sparingly.
 
-Use tables only for:
-- compact file summaries
-- comparison of adjacent components
-- end-of-section recaps
+Use them for:
+- compact recaps
+- direct comparisons
+- summary views that would otherwise become repetitive prose
 
-Do not put the main chapter content into tables.
-If a table can be replaced by two good explanatory paragraphs, prefer the paragraphs.
+Do not use tables as the main body of a chapter.
 
-### 7. Lists
+### Lists
 
-Use bullet lists sparingly and only when the reader benefits from compression.
+Use lists only when compression genuinely helps.
 
 Good uses:
 - ordered pipeline stages
-- short recap of outputs/artifacts
-- compact checklists of assumptions or constraints
+- short recap of artifacts or assumptions
+- compact checklists of constraints
 
 Bad uses:
-- replacing narrative explanation with fragments
+- replacing a real explanation with fragments
 - long undifferentiated bullet dumps
 
-### 8. Sentence style
+### Sentence style
 
 Prefer:
 - direct declarative sentences
-- concrete nouns over abstractions
-- causal phrasing: “because”, “therefore”, “this means”, “at this point”
+- concrete nouns
+- causal transitions such as “because”, “therefore”, “this produces”, “this feeds into”
 
 Avoid:
 - rhetorical questions
 - hype language
 - conversational filler
-- repeated sentence templates
+- repeated sentence scaffolds
 
-### 9. Chapter endings
+### Visual consistency
 
-A chapter should end with a short consolidation section, not a motivational wrap-up.
-
-Good ending content:
-- what is now true in the system because of this stage
-- what artifact or capability now exists
-- what next stage becomes possible
-
-### 10. Visual consistency
-
-For consistency across the book:
-- chapter titles should be title case
-- section headings should be short and concrete
-- bold should be used sparingly for emphasis, not decoration
-- inline code should be used for file names, symbols, commands, and artifacts
-- code blocks should specify language when possible (`python`, `bash`, `html`, `text`)
+For consistency across chapters:
+- chapter titles in title case
+- section headings short and concrete
+- bold used sparingly
+- code blocks labeled with language where possible (`python`, `bash`, `html`, `text`)
 
 ## What to avoid
 
-Do not write chapters that are mostly:
+Do not produce chapters that are mostly:
 - file inventories
 - bullet soup
 - tables without explanation
-- generic ML summaries disconnected from the code
+- generic ML summaries disconnected from the repo
 - editorial commentary
-- repetitive sentence forms across many sections
+- shallow single-sentence file descriptions with no system flow
+
+If a chapter only helps the reader recognize filenames, it has failed.
 
 ## Quality bar
 
-A chapter is good if, after reading it, the reader can answer:
+A chapter is good if the reader can answer:
 - why these files exist
-- why they exist in this order
+- why they appear in this order
 - how the stage works end to end
-- what concepts are necessary to understand the code
-- what this stage produces for the next one
+- what concepts are necessary to follow the implementation
+- what this stage produces for the next stage
 
-If the chapter only helps someone recognize filenames, it is not good enough.
+## Git workflow
 
-## Git workflow for this repo
-
-When updating chapters in this repo:
-- commit changes promptly
+When editing chapters in this repo:
+- commit promptly
 - push promptly
 
 W reviews on GitHub, not local disk.
