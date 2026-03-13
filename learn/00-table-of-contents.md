@@ -6,7 +6,7 @@
 2. [Preparing the Corpus](./02-preparing-the-corpus.md)  
    How nanochat obtains, reshapes, stores, downloads, and streams the text corpus used before tokenizer training.
 
-3. Learning the Vocabulary  
+3. [Learning the Vocabulary](./03-learning-the-vocabulary.md)  
    How nanochat trains its tokenizer, what artifacts it saves, and how tokenizer quality is measured.
 
 4. From Text to Training Batches  
