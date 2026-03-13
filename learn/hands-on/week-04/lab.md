@@ -1,23 +1,11 @@
-# Week 04 Hands-on Lab
+# Week 04 Lab
 
 ## Goal
-Build task abstraction + two tasks + aggregated evaluation.
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/week4_eval_framework.py`
-
-## Technical procedure
-1. Define minimal Task interface and run contract.
-2. Implement two concrete tasks with distinct scoring.
-3. Aggregate and print structured metrics summary.
-
-## Command skeleton
-```bash
-python learn/rebuild/week4_eval_framework.py
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors

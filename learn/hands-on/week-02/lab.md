@@ -1,23 +1,11 @@
-# Week 02 Hands-on Lab
+# Week 02 Lab
 
 ## Goal
-Implement a tiny GPT-like forward and one-step decode.
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/week2_transformer.py`
-
-## Technical procedure
-1. Implement embeddings, attention, MLP, residual path.
-2. Run forward pass on toy token batch.
-3. Run one decode step and inspect logits/probabilities.
-
-## Command skeleton
-```bash
-python learn/rebuild/week2_transformer.py
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors

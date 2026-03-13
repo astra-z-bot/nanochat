@@ -1,23 +1,11 @@
-# Week 06 Hands-on Lab
+# Week 06 Lab
 
 ## Goal
-Implement minimal serving path (CLI + Web).
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/week6_serve.py and learn/rebuild/week6_ui.html`
-
-## Technical procedure
-1. Expose generation endpoint in Python process.
-2. Connect simple UI to endpoint.
-3. Measure rough latency (request->response).
-
-## Command skeleton
-```bash
-# run integrated commands for this week
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors

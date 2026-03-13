@@ -1,23 +1,11 @@
-# Week 05 Hands-on Lab
+# Week 05 Lab
 
 ## Goal
-Implement mini SFT stage and compare behavior.
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/week5_chat_sft.py`
-
-## Technical procedure
-1. Load small conversation dataset.
-2. Run short supervised tuning loop.
-3. Compare pre/post prompt responses.
-
-## Command skeleton
-```bash
-python learn/rebuild/week5_chat_sft.py
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors

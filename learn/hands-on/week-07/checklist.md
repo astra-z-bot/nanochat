@@ -1,5 +1,7 @@
 # Week 07 Checklist
 
-- [ ] Only one independent variable changed.
-- [ ] Logs include run identity and key metrics.
-- [ ] Interpretation includes uncertainty/confounders.
+- [ ] subsystem implemented
+- [ ] commands executed
+- [ ] metrics recorded
+- [ ] failure root-caused
+- [ ] parity deltas documented

@@ -1,5 +1,7 @@
 # Week 02 Checklist
 
-- [ ] Forward pass produces expected shape [B, T, V].
-- [ ] Decode step consumes prior context correctly.
-- [ ] Document differences vs `nanochat/gpt.py`.
+- [ ] subsystem implemented
+- [ ] commands executed
+- [ ] metrics recorded
+- [ ] failure root-caused
+- [ ] parity deltas documented

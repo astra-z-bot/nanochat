@@ -1,23 +1,11 @@
-# Week 08 Hands-on Lab
+# Week 08 Lab
 
 ## Goal
-Execute full rebuild path and produce parity checklist.
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/* (integrated run)`
-
-## Technical procedure
-1. Run full sequence data->model->train->eval->serve.
-2. Collect outputs and runtime notes per stage.
-3. Produce parity checklist against nanochat reference.
-
-## Command skeleton
-```bash
-# run integrated commands for this week
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors

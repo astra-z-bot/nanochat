@@ -1,5 +1,7 @@
 # Week 06 Checklist
 
-- [ ] Endpoint responds deterministically on fixed prompt.
-- [ ] UI request/response schema is documented.
-- [ ] Document differences vs `chat_web.py` + `ui.html`.
+- [ ] subsystem implemented
+- [ ] commands executed
+- [ ] metrics recorded
+- [ ] failure root-caused
+- [ ] parity deltas documented

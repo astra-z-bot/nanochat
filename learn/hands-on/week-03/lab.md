@@ -1,23 +1,11 @@
-# Week 03 Hands-on Lab
+# Week 03 Lab
 
 ## Goal
-Implement train loop with checkpoint save/resume continuity.
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/week3_train_loop.py`
-
-## Technical procedure
-1. Train for N steps and save model/optimizer state.
-2. Resume and continue training for M more steps.
-3. Verify metric continuity and state restoration.
-
-## Command skeleton
-```bash
-python learn/rebuild/week3_train_loop.py
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors

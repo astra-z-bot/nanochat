@@ -1,17 +1,27 @@
 # Week 03 Results
 
-## Run identity
+## Run metadata
 - commit:
-- date:
 - hardware:
+- date:
+
+## Commands
+```bash
+# paste exact commands
+```
+
+## Outputs
+```text
+# paste key outputs
+```
 
 ## Metrics
 -
 
-## Failure log
+## Failure analysis
 - symptom:
 - root cause:
 - fix:
 
-## Parity notes
+## Parity deltas
 -

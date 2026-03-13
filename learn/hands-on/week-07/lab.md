@@ -1,23 +1,11 @@
-# Week 07 Hands-on Lab
+# Week 07 Lab
 
 ## Goal
-Run one baseline and one ablation with controlled variable.
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/week7_experiment.sh`
-
-## Technical procedure
-1. Define baseline config and run it.
-2. Define one-variable ablation and run it.
-3. Compare metrics with explicit interpretation caveats.
-
-## Command skeleton
-```bash
-# run integrated commands for this week
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors

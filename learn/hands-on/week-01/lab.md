@@ -1,23 +1,11 @@
-# Week 01 Hands-on Lab
+# Week 01 Lab
 
 ## Goal
-Implement minimal text -> token -> batch pipeline aligned to nanochat interfaces.
+Implement the weekly rebuild subsystem and compare behavior against nanochat source paths.
 
-## Target artifact
-- `learn/rebuild/week1_pipeline.py`
-
-## Technical procedure
-1. Define a tiny corpus and deterministic tokenizer behavior (even if toy).
-2. Create fixed-length token blocks and batch them into tensors.
-3. Print and validate shapes, dtype, and batch ordering.
-
-## Command skeleton
-```bash
-python learn/rebuild/week1_pipeline.py
-```
-
-## What to capture
-- raw command output
-- metrics table
-- one failure + fix
-- parity note vs original repo
+## Evidence required
+1. exact command transcript
+2. raw output snippets
+3. metrics
+4. failure analysis
+5. parity deltas with file anchors
