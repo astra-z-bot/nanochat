@@ -1,240 +1,176 @@
 # The Shape of the System
 
-Nanochat makes the most sense if you read it as the story of building a chat model from the ground up.
+Nanochat is easiest to understand as a sequence of transformations.
 
-A chat model does not begin with a web UI, or even with a transformer block. It begins with a runnable project, then a tokenization pipeline, then a base model, then a training loop, then evaluation, then post-training, and only after that does it become something you can chat with.
+A project starts as a directory with a pinned environment. That environment becomes a data pipeline. The data pipeline feeds a tokenizer. The tokenizer and corpus feed a transformer. The transformer is placed inside a training loop. The resulting checkpoints are evaluated, adapted into a chat model, and then exposed through an inference engine and serving layer. Around all of that sits an experiment harness that makes the system repeatable.
 
-This chapter follows that order and places each file where it enters the build.
+That sequence is the real structure of the repository. The folders only make sense once that flow is clear.
 
-## Start at the outer boundary: the project has to run at all
+## The project boundary comes first
 
-Before the model exists, the repo needs a stable execution environment.
+Before any model code matters, the repository has to be runnable in a stable way.
 
-`README.md` is the human entrypoint. It tells you what nanochat is trying to optimize, what workflows the author expects you to run, and which scripts matter. If you want the shortest path to “how is this repo meant to be used?”, this is where it starts.
+`README.md` is the public face of the project. It tells you what nanochat is for, which workflows matter, and which scripts define the expected path through the codebase. In a project like this, the README is not just documentation; it is the top-level execution map.
 
-`pyproject.toml` defines the Python project itself. It gives the repo a package identity and declares the dependencies that make the rest of the code possible. `uv.lock` freezes that dependency graph into a reproducible environment. `.python-version` pins the interpreter version expected by local tooling. `.gitignore` marks off the non-source boundary: environments, caches, generated files, temporary outputs.
+`pyproject.toml` gives the repository its Python identity and dependency surface. `uv.lock` freezes that surface into a reproducible environment. `.python-version` pins the interpreter expected by local tooling. `.gitignore` defines the boundary between source and generated state: caches, environments, experiment artifacts, and machine-specific files.
 
-At this point nothing “AI” has happened yet. But this stage is still part of the system. Nanochat is a research-heavy codebase; if the runtime shifts, then performance, kernel paths, tokenizer behavior, and even evaluation results can shift with it.
+At this stage, the system has no model behavior yet. What it has is a controlled runtime. That matters because later stages depend on kernel availability, tokenizer libraries, parquet tooling, and evaluation dependencies behaving consistently across runs.
 
-So the repo begins here: not with learning, but with reproducibility.
+## The first real pipeline is text to tokens
 
-## Then text has to become tokens
+Once the runtime exists, the next question is how the model will see language at all.
 
-Once the environment exists, the first real modeling problem is representation. The model will never see raw text directly. It will see token IDs. So the next part of the repo answers a simple question:
+Nanochat answers that with a text pipeline that begins before the model and remains foundational after the model is introduced. The path is:
 
-**How does text become model input?**
+**corpus -> tokenizer artifacts -> token IDs -> training batches**
 
-That path starts in `nanochat/tokenizer.py`. This file is the token boundary of the whole system. It is where plain text enters the project and where encoded token sequences emerge. It also defines the compatibility contract between tokenizer artifacts created during training and tokenization behavior at runtime.
+The tokenizer boundary lives in `nanochat/tokenizer.py`. This file is where raw text becomes an internal representation the rest of the stack can use. It is also where compatibility between tokenizer training artifacts and runtime encoding behavior has to hold.
 
-If `nanochat/tokenizer.py` is the interface, then `scripts/tok_train.py` is the builder. It exists to train a tokenizer from data. `scripts/tok_eval.py` is the judge for that tokenizer: it evaluates tokenizer quality, especially in terms of compression-oriented behavior, so the tokenizer can be compared before the model is trained on top of it.
+The tokenizer has two dedicated entrypoints. `scripts/tok_train.py` creates tokenizer artifacts from text. `scripts/tok_eval.py` evaluates those artifacts, mostly through compression-oriented signals that help compare tokenizer choices before model training begins.
 
-But a tokenizer is only one half of the early data path. The repo also needs a storage and loading story for text data.
+But the tokenizer does not operate over abstract text. It operates over a concrete corpus format, and that format is managed by the dataset path. `nanochat/dataset.py` describes how the pretraining corpus is stored, located, and streamed. `nanochat/dataloader.py` turns that stream into training-ready batches, handling chunking, packing, and distributed iteration.
 
-That is where `nanochat/dataset.py` and `nanochat/dataloader.py` enter.
+The important structural point is that tokenization and batching are separate concerns. `tokenizer.py` defines how strings become token IDs. `dataset.py` and `dataloader.py` define how a large stored corpus becomes a stream of documents and, later, a stream of tensors.
 
-`nanochat/dataset.py` is responsible for dataset access and preprocessing utilities. In this repo, the pretraining dataset is organized around parquet shards, so this file is part of the physical data contract of the system. `nanochat/dataloader.py` takes the next step: it turns tokenized examples into distributed, training-ready batches. This is where chunking, packing, ordering, and multi-process data flow become real.
+Two support files also belong to this part of the system. `dev/repackage_data_reference.py` documents how the current corpus was converted into the parquet shard format used by runtime code. `dev/gen_synthetic_data.py` supports dataset generation workflows that feed into training or evaluation paths.
 
-There are also two support files that belong to this stage, even if they are not part of the main runtime path.
+By the time this stage is finished, the system has crossed the first major boundary: it no longer sees text as arbitrary files on disk. It sees a managed corpus, a tokenizer, and a sequence of token batches.
 
-`dev/repackage_data_reference.py` exists because raw datasets are not always already shaped the way the training stack expects. It repackages data into the parquet shard format the rest of the repo is built around.
+## The model appears only after the data path is stable
 
-`dev/gen_synthetic_data.py` sits slightly off the main path, but still belongs to the data story. It generates synthetic examples, which makes it part of the broader question of how nanochat constructs or augments training/evaluation inputs.
+Once token IDs exist, the next question is what network will consume them.
 
-By the end of this stage, the repo has crossed an important boundary. It is no longer just a Python project with scripts. It has a complete path from text to tokens to training batches.
+That answer begins in `nanochat/gpt.py`. This is the architectural center of the repository. It defines the transformer itself: embeddings, block structure, attention path, MLP path, residual flow, and the final projection to logits. If you want to know what is actually being trained, `gpt.py` is the first file that matters.
 
-## After tokens, the model itself appears
+But the model in nanochat is not just an abstract transformer block stack. Its execution path is shaped by adjacent runtime files.
 
-Once token IDs exist, the next question is: what network consumes them?
+`nanochat/flash_attention.py` exists because attention is not just a mathematical operation; it is also a kernel-selection problem. This file manages the backend path used when the hardware and dtype configuration allow a faster implementation.
 
-The answer begins in `nanochat/gpt.py`.
+`nanochat/fp8.py` exists because precision is also not purely conceptual. The repo has a deliberate low-precision path, and that logic has to live somewhere explicit.
 
-This is the center of the codebase. If someone asked, “Where is the model, really?”, `nanochat/gpt.py` is the first file you would hand them. It contains the transformer definition: embeddings, attention path, MLP path, residual flow, and the structure that turns a sequence of token IDs into logits.
+`nanochat/common.py` ties into this layer as the shared runtime substrate: dtype decisions, device/runtime detection, and utility functions used across both training and inference.
 
-But the transformer definition in this repo is not isolated. It is surrounded by implementation files that modify how that model actually runs.
+So the model layer in nanochat is not one file. It is a cluster:
 
-`nanochat/flash_attention.py` is one of those files. It is not “the model” in the abstract sense, but it is part of how the model is executed. It chooses the attention backend path depending on runtime capability. In other words, the conceptual transformer lives in `gpt.py`, but the practical attention path may be rerouted through `flash_attention.py`.
+- `gpt.py` defines the network
+- `flash_attention.py` influences how attention executes
+- `fp8.py` influences how low-precision execution is handled
+- `common.py` provides the runtime assumptions the rest of that layer depends on
 
-`nanochat/fp8.py` plays a similar role for precision. It defines part of the low-precision execution story. Again, it is not the architecture definition itself, but it materially changes how that architecture is trained or run on modern hardware.
+## The model becomes a system when it is trained
 
-`nanochat/common.py` sits underneath all of this. It is not a model file, but it is a runtime substrate: shared helpers, dtype/runtime detection, logging and utility code that other parts of the training and inference stack lean on.
+A model definition on its own is static. Training is what turns it into a changing system.
 
-So if the tokenizer stage answers “how do we represent text?”, the model-definition stage answers two new questions:
+The center of that stage is `scripts/base_train.py`. This is the base-model training entrypoint. It is where the repository stops being a collection of reusable modules and becomes a runnable optimization pipeline.
 
-- what network will learn over those tokens?
-- what runtime/precision path will be used to execute it?
+`base_train.py` pulls together the main ingredients already introduced:
 
-That is the model layer of nanochat.
+- tokenized and batched data from `dataset.py` and `dataloader.py`
+- model structure from `gpt.py`
+- runtime helpers from `common.py`
 
-## A model definition alone is not useful; it has to be trained
+Then it adds the remaining machinery required for optimization.
 
-With token batches and a transformer definition in place, nanochat moves into optimization.
+`nanochat/optim.py` defines how parameters are updated. `nanochat/checkpoint_manager.py` defines how model state, optimizer state, and run progress are saved and resumed. `nanochat/loss_eval.py` computes training-adjacent loss-side signals. `nanochat/report.py` packages outputs into experiment summaries that are easier to compare across runs.
 
-This is the stage where the abstract model becomes a learned model.
+The training stage therefore has a clear internal structure:
 
-The center of that stage is `scripts/base_train.py`.
+1. get a batch
+2. run the model forward
+3. compute a loss
+4. backpropagate
+5. update parameters
+6. checkpoint state
+7. record signals
 
-This file is the main base-model training entrypoint. It is the orchestration layer that brings together the model from `nanochat/gpt.py`, the tokenizer and data path from `nanochat/tokenizer.py`, `nanochat/dataset.py`, and `nanochat/dataloader.py`, and the optimization utilities below it.
+That stage is the operational heart of the repository.
 
-Those optimization utilities live in a small cluster of files.
+## Evaluation splits off once checkpoints exist
 
-`nanochat/optim.py` defines how parameters are updated. It is the optimizer layer of the repo.
+Once training produces checkpoints, the repository needs a way to measure what those checkpoints can do.
 
-`nanochat/checkpoint_manager.py` defines how training state is saved and resumed. This is what lets long runs survive interruption and what gives experiments continuity instead of forcing every run to restart from zero.
+That path begins in `scripts/base_eval.py`. This is the base-model evaluation entrypoint. It loads trained checkpoints and runs them through the repository’s evaluation pipeline.
 
-`nanochat/loss_eval.py` sits near the train loop as the place where loss-side evaluation helpers live for the base model. It exists because training needs measurement, not just optimization.
+The evaluation core lives in `nanochat/core_eval.py`. This file is important because it captures part of the project’s philosophy about what “progress” means numerically.
 
-`nanochat/report.py` turns run results into structured summaries and report-like outputs. It is part of the experiment lifecycle rather than the gradient path, but it belongs to this stage because training is not complete when the optimizer steps; it is complete when the run leaves behind interpretable evidence.
+But evaluation is not one score. The benchmark/task layer under `tasks/` defines how model capability is actually probed.
 
-Put together, this stage is the full training runtime:
+`tasks/common.py` is the shared abstraction layer. The individual task files specialize that interface for concrete benchmarks or data formats:
 
-- batches come from the data path
-- the model runs forward
-- loss is computed
-- gradients are applied
-- state is checkpointed
-- metrics are recorded
-
-This is where the repo stops being a model implementation and becomes a trainer.
-
-## Training is not enough; the base model has to be measured
-
-After the base model has been trained, the next question is not “can it run?” but “how good is it?”
-
-That stage starts with `scripts/base_eval.py`.
-
-This file is the base-model evaluation entrypoint. It is the script that takes checkpoints and runs the repository’s evaluation logic over them.
-
-That evaluation logic is anchored by `nanochat/core_eval.py`. This file implements the CORE metric path that the repo uses as one of its major comparison signals.
-
-But base evaluation in nanochat is not only one metric. It depends on the task system under `tasks/`.
-
-`tasks/common.py` is the shared abstraction layer. It defines the common contract that task files follow.
-
-The individual task files each bind that abstraction to a concrete benchmark or data source:
-
-- `tasks/mmlu.py` for MMLU
-- `tasks/arc.py` for ARC
-- `tasks/gsm8k.py` for GSM8K
-- `tasks/humaneval.py` for HumanEval-style coding eval
-- `tasks/spellingbee.py` for narrower spelling/counting capability
-- `tasks/smoltalk.py` for conversational data/task usage
-- `tasks/customjson.py` for user-supplied JSONL task data
-
-This is the point where the repo becomes a benchmarking system, not just a training system.
-
-The important shift here is conceptual: before this stage, the code is trying to make a model learn. In this stage, the code is trying to determine what the model has learned.
-
-## The base model is not the final product; it must be turned into a chat model
-
-A pretrained next-token predictor is not yet the assistant behavior people expect from a chat interface. Nanochat has a dedicated post-training stack for that transition.
-
-`scripts/chat_sft.py` is the supervised fine-tuning stage. It teaches the model to behave more like a conversational assistant by training on conversation-style or task-style data.
-
-`scripts/chat_rl.py` pushes further by running a reinforcement-learning stage on top of the chat model. That stage is where reward-driven behavior refinement enters the system.
-
-`scripts/chat_eval.py` measures the result of those post-training stages. It is separate from `base_eval.py` because the target behavior is different: this is not just raw language-model competence anymore, but assistant-like interaction quality.
-
-`nanochat/execution.py` belongs here because some chat/evaluation workflows require running or checking code emitted by the model. It is not part of the base transformer, but it becomes relevant once the model is being used in code-producing or tool-using settings.
-
-Two task/data files connect strongly to this stage:
-
+- `tasks/mmlu.py`
+- `tasks/arc.py`
+- `tasks/gsm8k.py`
+- `tasks/humaneval.py`
+- `tasks/spellingbee.py`
 - `tasks/smoltalk.py`
 - `tasks/customjson.py`
 
-These matter here because post-training depends heavily on conversation-style or custom-structured data, not just generic pretraining text.
+This is the point where the repository becomes more than a trainer. It becomes a measurement system with explicit benchmark interfaces.
 
-At this stage, the repo has moved from:
+## The base model is then reshaped into a chat model
 
-- training a base language model
+A pretrained next-token model is not yet the system most users would call a chatbot. Nanochat makes that transition in a separate post-training stack.
 
-into:
+`scripts/chat_sft.py` is the supervised fine-tuning stage. It moves the model toward instruction-following and dialogue behavior by training on conversational or task-formatted data.
 
-- shaping and evaluating a chat model
+`scripts/chat_rl.py` adds a reinforcement-learning stage on top of that. This stage exists because the repo treats post-training as a multi-step process rather than as a single finetuning pass.
 
-That is the post-training boundary.
+`scripts/chat_eval.py` then evaluates the resulting chat model. At this point, evaluation is no longer only about raw base-model competence. It also has to reflect assistant-like behavior.
 
-## Once the chat model exists, it needs a runtime surface
+`nanochat/execution.py` belongs here because some chat-oriented workflows require executing or validating model-produced code. It is not part of the base model path, but it becomes relevant once the model is expected to act more like an assistant than a pure next-token predictor.
 
-After chat tuning, the repo shifts again. The question is no longer how to train the model, but how to use it.
+## A trained chat model still needs a runtime surface
 
-This starts in `nanochat/engine.py`.
+After post-training, the system is ready to be used interactively.
 
-`nanochat/engine.py` is the inference engine. It is the runtime bridge between trained weights and actual token-by-token generation. If `gpt.py` is the model definition and `base_train.py` is the training runtime, then `engine.py` is the serving-time runtime.
+That runtime begins in `nanochat/engine.py`. This file is the inference engine. It controls decode-time behavior, token generation, and the stateful mechanics that turn checkpoints into actual outputs.
 
-On top of that engine, nanochat provides two user-facing surfaces.
+On top of that engine, nanochat exposes two primary serving surfaces.
 
-`scripts/chat_cli.py` is the command-line interface. It is the simplest interactive path: no browser, no server indirection beyond what the script itself manages.
+`scripts/chat_cli.py` is the command-line path. It is the simplest interactive runtime and often the most direct way to inspect inference behavior without web-layer overhead.
 
-`scripts/chat_web.py` is the web-serving layer. It hosts the browser-facing experience and API behavior.
+`scripts/chat_web.py` is the server-side path for browser-based use. `nanochat/ui.html` is the corresponding frontend. Together they form the web-facing surface of the project.
 
-`nanochat/ui.html` is the frontend for that web path.
+`nanochat/logo.svg` belongs to this layer only as a supporting UI asset; it is part of presentation, not of model execution.
 
-`nanochat/logo.svg` also belongs here, though only as a supporting asset. It is part of the UI/docs presentation layer, not of the inference logic itself.
+At this point, the repository has completed the end-user path: model weights can now be loaded, run through an inference engine, and exposed through a usable interface.
 
-So the repo now has a complete story from trained model to interactive system:
+## Experiment scripts describe how the pieces are used in practice
 
-- load checkpoint
-- run inference engine
-- expose model through CLI or web
+The repo is not only a training stack. It is also an experimentation stack.
 
-That is the serving stage.
+That is what `runs/` is for.
 
-## The repo is also an experiment machine
+`runs/speedrun.sh` is the most direct end-to-end recipe. It is the quickest answer to the question, “how does the author expect these pieces to be used together?”
 
-Nanochat is not just a single training program. It is a system for running and comparing experiments. That is the role of `runs/`.
+`runs/miniseries.sh` encodes a model-family workflow for structured comparisons. `runs/scaling_laws.sh` encodes scaling-law style experiments. `runs/runcpu.sh` gives a lighter-weight path for CPU or MPS systems that cannot run the full GPU-centric workflow.
 
-The files here are not the core implementation. They are recipes that wire the implementation together.
+These scripts are not implementation-heavy, but they are structurally important. They show the intended orchestration of the implementation.
 
-`runs/speedrun.sh` is the main fast-path recipe. It is the most direct expression of how the author expects the end-to-end stack to be exercised.
-
-`runs/miniseries.sh` is for structured series-style runs, useful when sweeping across a family of model configurations.
-
-`runs/scaling_laws.sh` is for scaling-law style comparisons across budgets or model settings.
-
-`runs/runcpu.sh` is a lighter-weight path for CPU or MPS machines, useful when you want to exercise codepaths locally without full multi-GPU infrastructure.
-
-These files are important because they encode expected usage patterns. The implementation may tell you what the system can do; the run scripts tell you what the system is actually used for.
-
-## The repo also tells you what it considers fragile
+## Tests reveal what the repo considers risky
 
 The `tests/` directory is small, but it is high signal.
 
-`tests/test_attention_fallback.py` protects the attention backend boundary. That means the repo treats divergence between flash and fallback attention paths as a correctness-critical risk.
+`tests/test_attention_fallback.py` protects attention-path correctness across optimized and fallback implementations. `tests/test_engine.py` protects the inference engine.
 
-`tests/test_engine.py` protects the inference engine path. That means the repo treats generation/runtime behavior as another correctness-critical boundary.
+That means two boundaries are clearly treated as correctness-critical:
 
-A useful way to read tests in a repo like this is not just “what do they test?”, but “what did the author think was risky enough to need protection?”
+- attention backend behavior
+- inference runtime behavior
 
-In nanochat, at least two of those answers are clear:
+This is often one of the fastest ways to learn a codebase: look at what the authors chose to defend explicitly.
 
-- attention backend correctness
-- inference engine correctness
+## The dev directory is the surrounding research workflow
 
-## Finally, there is the surrounding research workflow
+The `dev/` directory is not the primary runtime path, but it explains how the project is developed and evaluated over time.
 
-The `dev/` directory contains files that are not the main runtime, but they reveal how the project is developed and evaluated over time.
+`dev/LOG.md` is the running experiment log. `dev/LEADERBOARD.md` records leaderboard framing and target metrics. `dev/repackage_data_reference.py` and `dev/gen_synthetic_data.py` support data workflows. `dev/scaling_analysis.ipynb` and `dev/estimate_gpt3_core.ipynb` are analysis notebooks. `dev/generate_logo.html`, `dev/nanochat.png`, and `dev/scaling_laws_jan26.png` are support assets and visual outputs.
 
-`dev/LOG.md` is the running experiment log. It records findings and shifts in understanding.
-
-`dev/LEADERBOARD.md` defines the leaderboard framing and target metric context. It tells you what the project is trying to optimize toward in a comparative sense.
-
-`dev/repackage_data_reference.py` and `dev/gen_synthetic_data.py` are utility scripts that support data-side workflows.
-
-`dev/scaling_analysis.ipynb` and `dev/estimate_gpt3_core.ipynb` are analysis notebooks. They are not part of the main runtime path, but they are part of the intellectual workflow around the repo.
-
-`dev/generate_logo.html`, `dev/nanochat.png`, and `dev/scaling_laws_jan26.png` are support assets and visual outputs.
-
-There is also one metadata-oriented file outside the main runtime structure:
-
-- `.claude/skills/read-arxiv-paper/SKILL.md`
-
-That file belongs to local tooling/assistant metadata rather than to the nanochat model stack itself.
+There is also `.claude/skills/read-arxiv-paper/SKILL.md`, which belongs to local tooling metadata rather than to the core nanochat model stack.
 
 ## Reading order
 
-A useful reading order follows the same build sequence described above.
-
-Start with the base stack:
+A practical reading order follows the same construction path:
 
 1. `README.md`
 2. `nanochat/tokenizer.py`
@@ -242,30 +178,18 @@ Start with the base stack:
 4. `nanochat/dataloader.py`
 5. `nanochat/gpt.py`
 6. `scripts/base_train.py`
-
-Then read evaluation:
-
 7. `scripts/base_eval.py`
 8. `nanochat/core_eval.py`
 9. `tasks/common.py`
-10. the individual task files in `tasks/`
-
-Then post-training:
-
+10. task files under `tasks/`
 11. `scripts/chat_sft.py`
 12. `scripts/chat_rl.py`
 13. `scripts/chat_eval.py`
 14. `nanochat/execution.py`
-
-Then runtime:
-
 15. `nanochat/engine.py`
 16. `scripts/chat_cli.py`
 17. `scripts/chat_web.py`
 18. `nanochat/ui.html`
-
-Then experiment wiring and support material:
-
 19. `runs/speedrun.sh`
 20. `runs/miniseries.sh`
 21. `runs/scaling_laws.sh`
@@ -274,15 +198,17 @@ Then experiment wiring and support material:
 24. `dev/LOG.md`
 25. `dev/LEADERBOARD.md`
 
-## Condensed picture
+## Recap
 
 Nanochat is a compact LLM training and experimentation stack.
 
-- `nanochat/` contains the implementation.
-- `scripts/` runs each stage.
-- `tasks/` defines benchmark and task behavior.
-- `runs/` encodes experiment recipes.
-- `tests/` protects correctness-critical runtime paths.
-- `dev/` records the surrounding research workflow and supporting utilities.
+The repository breaks down into:
 
-That is the structural map for the rest of the learning material.
+- `nanochat/` for implementation
+- `scripts/` for stage entrypoints
+- `tasks/` for benchmark/task definitions
+- `runs/` for experiment recipes
+- `tests/` for correctness-critical checks
+- `dev/` for the surrounding research workflow
+
+That is the structural map for the rest of the book.
