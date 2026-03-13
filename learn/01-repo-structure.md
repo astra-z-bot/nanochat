@@ -1,9 +1,6 @@
 # Nanochat Repository Structure — Following the Build Flow of a Chat AI
 
-This chapter is not a directory listing.
-It is a map of the repo in the order you would encounter it if you were building a chat model from scratch.
-
-The main idea:
+Nanochat is easiest to understand as a staged system:
 
 1. set up the project
 2. prepare text and tokenizer
@@ -12,8 +9,6 @@ The main idea:
 5. turn it into a chat model
 6. serve it through CLI/web
 7. run experiments and compare results
-
-That is the order this repo makes the most sense.
 
 ---
 
@@ -94,7 +89,7 @@ High-level role:
 
 ### What this means in pipeline terms
 
-If you mentally simulate the repo from the beginning, this is the first concrete flow:
+The corresponding execution flow is:
 
 1. define or gather text data
 2. possibly repackage it into the repo’s preferred storage format
@@ -453,9 +448,9 @@ These files are not the central runtime path, but they matter for understanding 
 
 ---
 
-## 11. A better reading order for the repo
+## 11. Reading order by build flow
 
-Instead of reading by folder name, read by build flow.
+A practical reading order is:
 
 ### Pass 1 — system flow
 1. `README.md`
@@ -499,4 +494,3 @@ If you compress the entire repo into one sentence:
 > Nanochat is a compact LLM research/training stack where `nanochat/` holds the implementation, `scripts/` runs the stages, `tasks/` defines what gets measured, `runs/` wires reproducible experiments, `tests/` guard risky behavior, and `dev/` records supporting research workflow and utilities.
 
 That is the structure.
-The next chapters should now follow the same time-order flow instead of folder-order.
