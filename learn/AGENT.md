@@ -2,7 +2,7 @@
 
 This file defines how chapters in `learn/` should be written.
 
-## Reader model
+## 1. Reader model
 
 Assume the reader is an experienced engineer.
 
@@ -13,7 +13,7 @@ Assume:
 
 Do not waste space re-explaining basics unless nanochat uses them in a non-standard or technically important way.
 
-## Core objective
+## 2. Core objective
 
 The book should explain how nanochat works as a system.
 
@@ -32,9 +32,9 @@ The book is not:
 
 It is a guided system walkthrough.
 
-## Editorial principles
+## 3. Editorial principles
 
-### 1. Tell the system story
+### 3.1 . Tell the system story
 
 Chapters should read like the system is being assembled or executed.
 
@@ -46,7 +46,7 @@ The preferred narrative pattern is:
 
 A chapter should feel like movement through the system, not static commentary about files.
 
-### 2. Files enter when they become necessary
+### 3.2 . Files enter when they become necessary
 
 Do not dump a folder and describe everything inside it.
 
@@ -59,7 +59,7 @@ Good:
 Bad:
 - directory-by-directory listing with one-line blurbs
 
-### 3. Prose first, tables second
+### 3.3 . Prose first, tables second
 
 The chapter should be carried by prose.
 
@@ -70,7 +70,7 @@ Use tables only when they compress information better than prose, for example:
 
 Do not let tables become the chapter.
 
-### 4. Be concrete
+### 3.4 . Be concrete
 
 Prefer:
 - exact file names
@@ -83,7 +83,7 @@ Avoid:
 - generic framework talk
 - “LLMs usually…” explanations that are not tied to nanochat
 
-### 5. Cut filler aggressively
+### 3.5 . Cut filler aggressively
 
 Remove:
 - motivational commentary
@@ -99,7 +99,7 @@ Every paragraph should do at least one of these:
 - explain a stage handoff
 - explain an implementation consequence
 
-### 6. No writer-facing instructions inside chapters
+### 3.6 . No writer-facing instructions inside chapters
 
 Do not include text like:
 - “this chapter is not…”
@@ -109,11 +109,11 @@ Do not include text like:
 
 Those belong in the editorial guide, not in the book.
 
-## Chapter contract
+## 4. Chapter contract
 
 Unless there is a strong reason not to, each chapter should follow this structure.
 
-### 1. Title
+### 4.1 . Title
 
 Use a real textbook-style chapter title.
 
@@ -134,7 +134,7 @@ Bad:
 - *Repo Structure Stuff*
 - inconsistent combinations of numbered and unnumbered titles
 
-### 2. Opening frame
+### 4.2 . Opening frame
 
 Start with two short paragraphs:
 
@@ -146,7 +146,7 @@ Do not begin with:
 - tables
 - meta explanation
 
-### 3. Main narrative body
+### 4.3 . Main narrative body
 
 This is the chapter.
 
@@ -160,7 +160,7 @@ For each important file, explain:
 
 The reader should be able to follow the system without jumping between disconnected file summaries.
 
-### 4. Recap section
+### 4.4 . Recap section
 
 After the main narrative, include a compact recap of the key files.
 
@@ -174,7 +174,7 @@ Recommended columns:
 
 Keep recap sections short.
 
-### 5. Required concepts
+### 4.5 . Required concepts
 
 Explain only the concepts required to understand this chapter’s code.
 
@@ -189,7 +189,7 @@ Bad examples:
 - what a Python class is
 - general transformer tutorials disconnected from the code
 
-### 6. Non-obvious dependency notes
+### 4.6 . Non-obvious dependency notes
 
 If the chapter depends on a non-obvious library or subsystem, explain it briefly.
 
@@ -210,7 +210,7 @@ For each dependency, explain:
 
 If no non-obvious dependency is central to the chapter, skip this section.
 
-### 7. End-of-chapter synthesis
+### 4.7 . End-of-chapter synthesis
 
 End with a short consolidation section.
 
@@ -221,16 +221,16 @@ It should state:
 
 Do not end with motivational prose.
 
-## Formatting standard
+## 5. Formatting standard
 
 The book should look like a technical textbook, not notes or documentation fragments.
 
-### Heading hierarchy
+### 5.1 Heading hierarchy
 
 Use a shallow, stable hierarchy:
 - `#` chapter title in the form `Chapter N — Title`
 - `##` numbered major sections in the form `N. Title`
-- `###` unnumbered subsections only when necessary
+- `###` numbered subsections in the form `N.M Title`, only when necessary
 
 Section headings should be parallel in style.
 Prefer short title-case noun phrases over sentence-style headings.
@@ -238,16 +238,18 @@ Prefer short title-case noun phrases over sentence-style headings.
 Good section headings:
 - `## 4. Base Model Training`
 - `## 7. Download and Retry Logic`
-- `## 10. Reading Order`
+- `### 2.1 Core Files`
+- `### 2.2 Supporting Files`
 
 Bad section headings:
 - `## The model becomes a system when it is trained`
 - `## How the download script is actually used`
+- `### Core files`
 - a mixture of numbered headings in one chapter and unnumbered headings in another
 
 Avoid deeply nested headings.
 
-### Paragraph form
+### 5.2 Paragraph form
 
 Default paragraph size:
 - 3–6 sentences
@@ -257,7 +259,7 @@ Rules:
 - start a new paragraph when moving to a new file or a new system handoff
 - keep explanatory paragraphs dense but readable
 
-### File references
+### 5.3 File references
 
 Always format file names as inline code.
 
@@ -273,7 +275,7 @@ Use inline code for:
 - artifacts
 - config names
 
-### Code excerpts
+### 5.4 Code excerpts
 
 Use code excerpts only when they teach something structural.
 
@@ -289,7 +291,7 @@ Preferred rhythm:
 - explain what the excerpt means in the system
 - continue the narrative
 
-### Tables
+### 5.5 Tables
 
 Use tables sparingly.
 
@@ -300,7 +302,7 @@ Use them for:
 
 Do not use tables as the main body of a chapter.
 
-### Lists
+### 5.6 Lists
 
 Use lists only when compression genuinely helps.
 
@@ -313,7 +315,7 @@ Bad uses:
 - replacing a real explanation with fragments
 - long undifferentiated bullet dumps
 
-### Sentence style
+### 5.7 Sentence style
 
 Prefer:
 - direct declarative sentences
@@ -326,7 +328,7 @@ Avoid:
 - conversational filler
 - repeated sentence scaffolds
 
-### Visual consistency
+### 5.8 Visual consistency
 
 For consistency across chapters:
 - chapter titles in title case
@@ -334,7 +336,7 @@ For consistency across chapters:
 - bold used sparingly
 - code blocks labeled with language where possible (`python`, `bash`, `html`, `text`)
 
-## What to avoid
+## 6. What to avoid
 
 Do not produce chapters that are mostly:
 - file inventories
@@ -346,7 +348,7 @@ Do not produce chapters that are mostly:
 
 If a chapter only helps the reader recognize filenames, it has failed.
 
-## Quality bar
+## 7. Quality bar
 
 A chapter is good if the reader can answer:
 - why these files exist
@@ -355,7 +357,7 @@ A chapter is good if the reader can answer:
 - what concepts are necessary to follow the implementation
 - what this stage produces for the next stage
 
-## Git workflow
+## 8. Git workflow
 
 When editing chapters in this repo:
 - commit promptly

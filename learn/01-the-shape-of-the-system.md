@@ -119,7 +119,7 @@ A pretrained next-token model is not yet the system most users would call a chat
 
 `nanochat/execution.py` belongs here because some chat-oriented workflows require executing or validating model-produced code. It is not part of the base model path, but it becomes relevant once the model is expected to act more like an assistant than a pure next-token predictor.
 
-## A trained chat model still needs a runtime surface
+## 7. A trained chat model still needs a runtime surface
 
 After post-training, the system is ready to be used interactively.
 
@@ -135,7 +135,7 @@ On top of that engine, nanochat exposes two primary serving surfaces.
 
 At this point, the repository has completed the end-user path: model weights can now be loaded, run through an inference engine, and exposed through a usable interface.
 
-## Experiment scripts describe how the pieces are used in practice
+## 8. Experiment scripts describe how the pieces are used in practice
 
 The repo is not only a training stack. It is also an experimentation stack.
 
@@ -147,7 +147,7 @@ That is what `runs/` is for.
 
 These scripts are not implementation-heavy, but they are structurally important. They show the intended orchestration of the implementation.
 
-## Tests reveal what the repo considers risky
+## 9. Tests reveal what the repo considers risky
 
 The `tests/` directory is small, but it is high signal.
 
@@ -160,7 +160,7 @@ That means two boundaries are clearly treated as correctness-critical:
 
 This is often one of the fastest ways to learn a codebase: look at what the authors chose to defend explicitly.
 
-## The dev directory is the surrounding research workflow
+## 10. The dev directory is the surrounding research workflow
 
 The `dev/` directory is not the primary runtime path, but it explains how the project is developed and evaluated over time.
 
