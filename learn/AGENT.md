@@ -122,15 +122,17 @@ Requirements:
 - readable
 - concrete
 - title case
+- written as `Chapter N — Title`
 
 Good:
-- *Preparing the Corpus*
-- *Defining the Transformer*
-- *Training the Base Model*
+- *Chapter 1 — The Shape of the System*
+- *Chapter 2 — Preparing the Corpus*
+- *Chapter 8 — Training the Base Model*
 
 Bad:
 - *Dataset Before Tokenizer Phase*
 - *Repo Structure Stuff*
+- inconsistent combinations of numbered and unnumbered titles
 
 ### 2. Opening frame
 
@@ -226,9 +228,22 @@ The book should look like a technical textbook, not notes or documentation fragm
 ### Heading hierarchy
 
 Use a shallow, stable hierarchy:
-- `#` chapter title
-- `##` major sections
-- `###` subsections only when necessary
+- `#` chapter title in the form `Chapter N — Title`
+- `##` numbered major sections in the form `N. Title`
+- `###` unnumbered subsections only when necessary
+
+Section headings should be parallel in style.
+Prefer short title-case noun phrases over sentence-style headings.
+
+Good section headings:
+- `## 4. Base Model Training`
+- `## 7. Download and Retry Logic`
+- `## 10. Reading Order`
+
+Bad section headings:
+- `## The model becomes a system when it is trained`
+- `## How the download script is actually used`
+- a mixture of numbered headings in one chapter and unnumbered headings in another
 
 Avoid deeply nested headings.
 

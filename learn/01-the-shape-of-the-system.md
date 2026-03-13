@@ -1,4 +1,4 @@
-# The Shape of the System
+# Chapter 1 — The Shape of the System
 
 Nanochat is easiest to understand as a sequence of transformations.
 
@@ -6,7 +6,7 @@ A project starts as a directory with a pinned environment. That environment beco
 
 That sequence is the real structure of the repository. The folders only make sense once that flow is clear.
 
-## The project boundary comes first
+## 1. Project Bootstrap
 
 Before any model code matters, the repository has to be runnable in a stable way.
 
@@ -16,7 +16,7 @@ Before any model code matters, the repository has to be runnable in a stable way
 
 At this stage, the system has no model behavior yet. What it has is a controlled runtime. That matters because later stages depend on kernel availability, tokenizer libraries, parquet tooling, and evaluation dependencies behaving consistently across runs.
 
-## The first real pipeline is text to tokens
+## 2. Data and Tokenizer Preparation
 
 Once the runtime exists, the next question is how the model will see language at all.
 
@@ -36,7 +36,7 @@ Two support files also belong to this part of the system. `dev/repackage_data_re
 
 By the time this stage is finished, the system has crossed the first major boundary: it no longer sees text as arbitrary files on disk. It sees a managed corpus, a tokenizer, and a sequence of token batches.
 
-## The model appears only after the data path is stable
+## 3. Base Model Definition
 
 Once token IDs exist, the next question is what network will consume them.
 
@@ -57,7 +57,7 @@ So the model layer in nanochat is not one file. It is a cluster:
 - `fp8.py` influences how low-precision execution is handled
 - `common.py` provides the runtime assumptions the rest of that layer depends on
 
-## The model becomes a system when it is trained
+## 4. Base Model Training
 
 A model definition on its own is static. Training is what turns it into a changing system.
 
@@ -85,7 +85,7 @@ The training stage therefore has a clear internal structure:
 
 That stage is the operational heart of the repository.
 
-## Evaluation splits off once checkpoints exist
+## 5. Base Model Evaluation
 
 Once training produces checkpoints, the repository needs a way to measure what those checkpoints can do.
 
@@ -107,7 +107,7 @@ But evaluation is not one score. The benchmark/task layer under `tasks/` defines
 
 This is the point where the repository becomes more than a trainer. It becomes a measurement system with explicit benchmark interfaces.
 
-## The base model is then reshaped into a chat model
+## 6. Chat Post-Training
 
 A pretrained next-token model is not yet the system most users would call a chatbot. Nanochat makes that transition in a separate post-training stack.
 
@@ -168,7 +168,7 @@ The `dev/` directory is not the primary runtime path, but it explains how the pr
 
 There is also `.claude/skills/read-arxiv-paper/SKILL.md`, which belongs to local tooling metadata rather than to the core nanochat model stack.
 
-## Reading order
+## 11. Reading Order
 
 A practical reading order follows the same construction path:
 
@@ -198,7 +198,7 @@ A practical reading order follows the same construction path:
 24. `dev/LOG.md`
 25. `dev/LEADERBOARD.md`
 
-## Recap
+## 12. System Summary
 
 Nanochat is a compact LLM training and experimentation stack.
 

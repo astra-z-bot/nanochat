@@ -1,4 +1,4 @@
-# Preparing the Corpus
+# Chapter 2 — Preparing the Corpus
 
 Before nanochat can train a tokenizer, it needs a large, stable stream of plain text.
 
@@ -16,7 +16,7 @@ So the dataset story in nanochat has two distinct parts:
 
 This chapter follows that sequence.
 
-## 1. The dataset does not begin inside `nanochat/`
+## 1. Source Corpus and Reference Repackaging
 
 The first relevant file is not in the main runtime package. It is `dev/repackage_data_reference.py`.
 
@@ -55,7 +55,7 @@ So even though the upstream source is tokenized, nanochat’s tokenizer-training
 
 That is the first key design choice.
 
-## 2. Why the repo repackages the source dataset
+## 2. Repackaging Objectives
 
 The repackaging script is not just reformatting for convenience. It is creating a storage format that later runtime code can stream efficiently.
 
@@ -107,7 +107,7 @@ That is how the “offline” preparation path becomes the “online” runtime 
 
 The runtime no longer needs to know how ClimbMix was originally formed. It only needs to know where the prepared shards live and what format they have.
 
-## 3. The runtime view of the dataset starts in `nanochat/dataset.py`
+## 3. Runtime Dataset Contract
 
 Once the repackaged dataset exists remotely, the runtime path becomes very small and direct.
 
@@ -128,7 +128,7 @@ This file is not a general dataset abstraction layer. It is the concrete runtime
 
 That is an important distinction.
 
-## 4. Where the dataset lives locally
+## 4. Local Cache Layout
 
 `nanochat/dataset.py` uses `get_base_dir()` from `nanochat/common.py`.
 
@@ -145,7 +145,7 @@ That means the repo itself stays relatively clean. Large data artifacts live in 
 
 This is the storage convention that later tokenizer and training stages depend on.
 
-## 5. How nanochat discovers local shards
+## 5. Local Shard Discovery
 
 The first real utility in `nanochat/dataset.py` is `list_parquet_files()`.
 
@@ -169,7 +169,7 @@ The warning message in this function is also revealing because it documents the 
 
 That is exactly the bridge between this chapter and the tokenizer-training chapter.
 
-## 6. The iterator used by tokenizer training
+## 6. Row-Group Iteration
 
 The central runtime function for this chapter is `parquets_iter_batched(split, start=0, step=1)`.
 
@@ -205,7 +205,7 @@ That is the storage/runtime handshake created by the earlier repackaging step:
 
 So the runtime loader is not arbitrary. It was designed together with the repackaging strategy.
 
-## 7. How missing shards are downloaded
+## 7. Download and Retry Logic
 
 The next important part of `nanochat/dataset.py` is `download_single_file(index)`.
 
@@ -237,7 +237,7 @@ Even though `nanochat/common.py` contains a generic `download_file_with_lock()` 
 
 That is a useful architectural detail: the dataset path is specialized rather than fully unified under a generic download abstraction.
 
-## 8. How the download script is actually used
+## 8. Dataset Download CLI
 
 The `if __name__ == "__main__":` block in `nanochat/dataset.py` turns the file into a runnable downloader.
 
@@ -262,7 +262,7 @@ So operationally, `nanochat.dataset` is both:
 - a library module used by tokenizer/training code
 - a direct CLI utility for assembling the local shard cache
 
-## 9. Where tokenizer training enters the story
+## 9. Tokenizer-Training Ingress
 
 Now the dataset management stage connects directly to `scripts/tok_train.py`.
 
@@ -297,7 +297,7 @@ Tokenizer training is treated as a budgeted process. The tokenizer is not necess
 
 This makes tokenizer experiments cheaper and more repeatable.
 
-## 10. What `tok_train.py` does after reading the dataset
+## 10. Tokenizer-Training Outputs
 
 Once the text iterator exists, the rest of `tok_train.py` is straightforward:
 
@@ -314,7 +314,7 @@ So after tokenizer training, the script precomputes a mapping from token id to t
 
 This means tokenizer training in nanochat is not just about producing vocab/merge files. It is also about producing the byte-accounting metadata needed by later evaluation.
 
-## 11. The complete story of the dataset before tokenization
+## 11. End-to-End Corpus Flow
 
 Putting the files together, the story is:
 
@@ -330,7 +330,7 @@ Putting the files together, the story is:
 
 That is the dataset-management pipeline for the tokenizer phase.
 
-## 12. What to read next
+## 12. Reading Order
 
 The natural next chapter is the tokenizer itself:
 
