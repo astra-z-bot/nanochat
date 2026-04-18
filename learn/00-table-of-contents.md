@@ -12,7 +12,7 @@
 4. [From Text to Training Batches](./04-from-text-to-training-batches.md)  
    How tokenized documents become packed, ordered, and distributed training batches.
 
-5. Defining the Transformer  
+5. [Defining the Transformer](./05-defining-the-transformer.md)  
    The structure of the model in `gpt.py`: embeddings, blocks, outputs, and model configuration.
 
 6. Attention as an Implementation Problem  
