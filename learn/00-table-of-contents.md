@@ -9,7 +9,7 @@
 3. [Learning the Vocabulary](./03-learning-the-vocabulary.md)  
    How nanochat trains its tokenizer, what artifacts it saves, and how tokenizer quality is measured.
 
-4. From Text to Training Batches  
+4. [From Text to Training Batches](./04-from-text-to-training-batches.md)  
    How tokenized documents become packed, ordered, and distributed training batches.
 
 5. Defining the Transformer  
