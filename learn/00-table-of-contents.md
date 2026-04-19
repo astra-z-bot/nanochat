@@ -15,7 +15,7 @@
 5. [Defining the Transformer](./05-defining-the-transformer.md)  
    The structure of the model in `gpt.py`: embeddings, blocks, outputs, and model configuration.
 
-6. Attention as an Implementation Problem  
+6. [Attention as an Implementation Problem](./06-attention-as-an-implementation-problem.md)  
    How nanochat realizes QKV flow, masking, backend selection, and attention execution in practice.
 
 7. Precision, Kernels, and Runtime Paths  
